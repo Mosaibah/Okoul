@@ -6,23 +6,57 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Okoul.Models;
+using Okoul.Models.ViewModels;
+using Okoul.Services;
 
 namespace Okoul.Controllers
 {
     public class QuotesController : Controller
     {
         private readonly OkoulContext _context;
+        private readonly IQuoteService quoteService;
 
-        public QuotesController(OkoulContext context)
+        public QuotesController(OkoulContext context, IQuoteService quoteServicecs)
         {
             _context = context;
+            this.quoteService = quoteServicecs;
         }
 
         // GET: Quotes
         public async Task<IActionResult> Index()
         {
-            var okoulContext = _context.Quote.Include(q => q.Author);
-            return View(await okoulContext.ToListAsync());
+            var quotes = await _context.Quote.Include(q => q.Author).ToListAsync();
+
+            ViewData["Authors"] = new MultiSelectList(_context.Author, "Id", "Name");
+
+            return View();
+        }
+
+        [HttpPost]
+        [Route("quotes/quoteslist")]
+        public async Task<IActionResult> QuotesList([Bind("Id,Authors, Text, StartDate, EndDate")] SearchQuotesVM model)
+        {
+            model.PageSize = Convert.ToInt32(HttpContext.Request.Form["length"].FirstOrDefault() ?? "0");
+            model.Skip = Convert.ToInt32(Request.Form["start"].FirstOrDefault() ?? "0");
+            model.Draw = Request.Form["draw"].FirstOrDefault();
+
+            SearchQuotesVM newModel = await quoteService.ListQuotes(model);
+
+
+            return Json(new
+            {
+                draw = newModel.Draw,
+                recordsTotal = newModel.RecordsTotal,
+                recordsFiltered = newModel.RecordsFiltered,
+                data = newModel.Quotes.Select(c => new
+                {
+                    id = c.Id,
+                    text = c.Text,
+                    author = c.Author.Name,
+                    authorid = c.AuthorId,
+                    createdat = c.CreatedAt.ToString("yyyy/MM/dd")
+                }).ToList()
+            });
         }
 
         // GET: Quotes/Details/5
@@ -60,8 +94,7 @@ namespace Okoul.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(quote);
-                await _context.SaveChangesAsync();
+                await quoteService.AddQuote(quote);
                 return RedirectToAction(nameof(Index));
             }
             ViewData["AuthorId"] = new SelectList(_context.Author, "Id", "Name", quote.AuthorId);
@@ -101,8 +134,7 @@ namespace Okoul.Controllers
             {
                 try
                 {
-                    _context.Update(quote);
-                    await _context.SaveChangesAsync();
+                    await quoteService.UpdateQuote(quote);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -149,13 +181,7 @@ namespace Okoul.Controllers
             {
                 return Problem("Entity set 'OkoulContext.Quote'  is null.");
             }
-            var quote = await _context.Quote.FindAsync(id);
-            if (quote != null)
-            {
-                _context.Quote.Remove(quote);
-            }
-            
-            await _context.SaveChangesAsync();
+            await quoteService.DeleteQuote(id);
             return RedirectToAction(nameof(Index));
         }
 

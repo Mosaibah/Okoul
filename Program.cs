@@ -1,5 +1,6 @@
 using Okoul.Models;
 using Microsoft.EntityFrameworkCore;
+using Okoul.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,9 @@ var provider = builder.Services.BuildServiceProvider();
 var configuration = provider.GetRequiredService<IConfiguration>();
 builder.Services.AddDbContext<OkoulContext>(item =>
 item.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IQuoteService, QuoteService>();
+
 
 var app = builder.Build();
 
