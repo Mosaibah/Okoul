@@ -14,11 +14,13 @@ namespace Okoul.Services
             _context = context;
         }
 
+        #region AddQuote
         public async Task<int> AddQuote(Quote quote)
         {
             _context.Add(quote);
             return await _context.SaveChangesAsync();
         }
+        #endregion
 
         public async Task<int> UpdateQuote(Quote quote)
         {
@@ -73,9 +75,6 @@ namespace Okoul.Services
             model.RecordsFiltered = await quotesFiltered.CountAsync();
 
             return model;
-            }
-        
-
-
+        }
     }
 }

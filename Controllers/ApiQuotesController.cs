@@ -22,13 +22,6 @@ namespace Okoul.Controllers
             _context = context;
             this.quoteService = quoteService;
         }
-
-        // GET: api/ApiQuotes
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<Quote>>> GetQuotes()
-        //{
-        //    return await _context.Quote.ToListAsync();
-        //}
         
         [HttpGet]
         public async Task<ActionResult<Quote>> GetRandomQuote()

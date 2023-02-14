@@ -49,7 +49,6 @@ namespace Okoul.Controllers
 
             SearchQuotesVM newModel = await quoteService.ListQuotes(model);
 
-
             return Json(new
             {
                 draw = newModel.Draw,
@@ -93,8 +92,6 @@ namespace Okoul.Controllers
         }
 
         // POST: Quotes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Text,CreatedAt,AuthorId")] Quote quote)
@@ -126,8 +123,6 @@ namespace Okoul.Controllers
         }
 
         // POST: Quotes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Text,CreatedAt,AuthorId")] Quote quote)

@@ -2,12 +2,10 @@
 
 <h1 class="mb-4">Quotes</h1>
 
-
 <div class="d-flex mb-5">
     <a asp-action="Create" class="btn btn-dark me-3">Create New</a>
     <a asp-controller="ApiQuotes" asp-action="GetRandomQuote" class="btn btn-outline-dark">GetRandomQuote</a>
 </div>
-
 
 <form id="form" asp-action="QuotesList"  method="POST" >
     <div class="row g-2">
@@ -30,7 +28,6 @@
 
     </div>
 </form>
-
 
 <div style="max-width:calc(100vm-2rem);overflow-x:scroll">
 
@@ -92,13 +89,12 @@
                     { data: 'author' },
                     { data: 'createdat' }
                 ]
-
             });
         }
 
-            $('.select2').select2();
-            flatpickr('#StartDate', {});
-            flatpickr('#EndDate', {});
+        $('.select2').select2();
+        flatpickr('#StartDate', {});
+        flatpickr('#EndDate', {});
 
     </script>
 }

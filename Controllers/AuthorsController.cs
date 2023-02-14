@@ -41,7 +41,6 @@ namespace Okoul.Controllers
 
             SearchAuthorVM newModel = await authorService.ListAuthors(model);
 
-
             return Json(new
             {
                 draw = newModel.Draw,
@@ -56,16 +55,6 @@ namespace Okoul.Controllers
             });
         }
 
-        //public RedirectAndPostActionResult AuthorQuotes(int? id)
-        //{
-        //    Dictionary<string, object> postData = new Dictionary<string, object>();
-        //    SearchAuthorVM a = new SearchAuthorVM();
-        //    postData.Add("first", "someValueOne");
-        //    postData.Add("second", "someValueTwo");
-
-        //    return Fluentx.Mvc.Extensions.RedirectAndPost("http://TheUrlToPostDataTo", a);
-        //}
-        // GET: Authors/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Author == null)
@@ -90,8 +79,6 @@ namespace Okoul.Controllers
         }
 
         // POST: Authors/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,CreatedAt")] Author author)
@@ -122,8 +109,6 @@ namespace Okoul.Controllers
         }
 
         // POST: Authors/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,CreatedAt")] Author author)
