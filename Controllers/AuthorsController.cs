@@ -6,24 +6,65 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Okoul.Models;
+using Okoul.Models.ViewModels;
+using Okoul.Services;
+using Fluentx.Mvc;
 
 namespace Okoul.Controllers
 {
     public class AuthorsController : Controller
     {
         private readonly OkoulContext _context;
+        private readonly IAuthorService authorService;
 
-        public AuthorsController(OkoulContext context)
+        public AuthorsController(OkoulContext context, IAuthorService authorService)
         {
             _context = context;
+            this.authorService = authorService;
         }
 
         // GET: Authors
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Author.ToListAsync());
+            ViewData["Authors"] = new MultiSelectList(_context.Author, "Id", "Name");
+            return View();
         }
 
+        [HttpPost]
+        [Route("authors/authorslist")]
+        public async Task<IActionResult> AuthorsList([Bind("Id,AuthorIds ,StartDate, EndDate")] SearchAuthorVM model)
+        {
+            model.PageSize = Convert.ToInt32(HttpContext.Request.Form["length"].FirstOrDefault() ?? "0");
+            model.Skip = Convert.ToInt32(Request.Form["start"].FirstOrDefault() ?? "0");
+            model.Draw = Request.Form["draw"].FirstOrDefault();
+
+            SearchAuthorVM newModel = await authorService.ListAuthors(model);
+
+
+            return Json(new
+            {
+                draw = newModel.Draw,
+                recordsTotal = newModel.RecordsTotal,
+                recordsFiltered = newModel.RecordsFiltered,
+                data = newModel.Authors.Select(c => new
+                {
+                    id = c.Id,
+                    name = c.Name,
+                    createdat = c.CreatedAt.ToString("yyyy/MM/dd")
+                }).ToList()
+            });
+        }
+
+        //public RedirectAndPostActionResult AuthorQuotes(int? id)
+        //{
+        //    Dictionary<string, object> postData = new Dictionary<string, object>();
+        //    SearchAuthorVM a = new SearchAuthorVM();
+        //    postData.Add("first", "someValueOne");
+        //    postData.Add("second", "someValueTwo");
+
+        //    return Fluentx.Mvc.Extensions.RedirectAndPost("http://TheUrlToPostDataTo", a);
+        //}
         // GET: Authors/Details/5
         public async Task<IActionResult> Details(int? id)
         {

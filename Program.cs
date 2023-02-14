@@ -13,6 +13,7 @@ builder.Services.AddDbContext<OkoulContext>(item =>
 item.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IQuoteService, QuoteService>();
+builder.Services.AddScoped<IAuthorService, AuthorService>();
 
 
 var app = builder.Build();

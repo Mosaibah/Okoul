@@ -23,11 +23,18 @@ namespace Okoul.Controllers
         }
 
         // GET: Quotes
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id)
         {
+            if (id is not null)
+            {
+                var selectedAuthors = _context.Author.Where(c => c.Id == id).Select(c => c.Id);
+                ViewData["Authors"] = new MultiSelectList(_context.Author, "Id", "Name", selectedAuthors);
+            }
+            else
+            {
+                ViewData["Authors"] = new MultiSelectList(_context.Author, "Id", "Name");
+            }
             var quotes = await _context.Quote.Include(q => q.Author).ToListAsync();
-
-            ViewData["Authors"] = new MultiSelectList(_context.Author, "Id", "Name");
 
             return View();
         }

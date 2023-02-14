@@ -46,7 +46,8 @@ namespace Okoul.Services
         public async Task<SearchQuotesVM> ListQuotes(SearchQuotesVM model)
         {
             List<Quote> quotes = new();
-            int recordsFiltered = 0;
+            model.RecordsTotal = await _context.Quote.CountAsync();
+            model.RecordsFiltered = 0;
 
             var countQuotes = await _context.Quote.CountAsync();
             var quotesFiltered = _context.Quote.Include(c => c.Author).AsQueryable();

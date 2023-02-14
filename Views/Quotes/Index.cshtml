@@ -13,7 +13,7 @@
 <form id="form" asp-action="QuotesList"  method="POST" >
     <div class="row g-2">
         <div class="offset-1 col-10 offset-md-0 col-sm-4 col-md-3">
-            <label for="Status" class="form-label">Status</label>
+            <label for="Status" class="form-label">Authors</label>
             <select class="form-select w-100 select2" asp-items="@ViewBag.Authors" asp-for="Authors" multiple></select>
         </div>
         <div class="offset-1 col-10 offset-md-0 col-sm-4 col-md-3">
@@ -68,7 +68,6 @@
          })
 
         function Search(){
-            //debugger;
             $('#quotesTable').DataTable( {
 
             ajax: {
