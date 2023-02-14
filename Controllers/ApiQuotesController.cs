@@ -24,10 +24,16 @@ namespace Okoul.Controllers
         }
 
         // GET: api/ApiQuotes
+        //[HttpGet]
+        //public async Task<ActionResult<IEnumerable<Quote>>> GetQuotes()
+        //{
+        //    return await _context.Quote.ToListAsync();
+        //}
+        
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Quote>>> GetQuote()
+        public async Task<ActionResult<Quote>> GetRandomQuote()
         {
-            return await _context.Quote.ToListAsync();
+            return await quoteService.GetRandomQuote();
         }
 
         // GET: api/ApiQuotes/5
